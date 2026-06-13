@@ -18,6 +18,8 @@ This document serves as the source of truth for the M.ARCHIVE boutique studio po
 - **Secondary Text:** `#71717A` (Muted Gray)
   - *Usage:* Navigation links, Scroll indicator text.
 - **Body Text:** `#52525B` (Soft Zinc Gray)
+- **Utility Background:** `#E4D5B7` (Warm Parchment)
+  - *Usage:* Tech Stack and Experience cards.
 
 ## 2. Layout & UI Architecture
 
@@ -37,9 +39,11 @@ This document serves as the source of truth for the M.ARCHIVE boutique studio po
   - **Animation:** Auto-playing carousel cycling through 3 projects every 4 seconds.
 - **Capabilities (2x2):** Large accent-colored card (`#325041`) with background symbol.
 - **Domain Card (1x1):** "03 / DOMAIN", White card with accent-colored icon/label.
-- **Tech Stack Card (1x1):** "04 / TECH STACK", Warm parchment card (`#E4D5B7`) with charcoal text.
-- **GitHub Card (2x1):** "05 / GITHUB", Horizontal white card.
-- **Experience Card (1x1):** "06 / EXPERIENCE", Warm parchment card (`#E4D5B7`) with vertical carousel and charcoal text.
+- **Tech Stack Card (1x1):** "04 / TECH STACK", Warm parchment card (`#E4D5B7`) with charcoal text and animated pulse indicators.
+- **GitHub Card (2x1):** "05 / GITHUB", Live dashboard for user `NextMutant`.
+  - **Features:** High-fidelity interactive heatmap (Warm Green), Language distribution bar (Percentage-based), and Recent Event feed (last 3 events).
+  - **Layout:** Top-aligned editorial dashboard with horizontal column split.
+- **Experience Card (1x1):** "06 / EXPERIENCE", Warm parchment card (`#E4D5B7`) with vertical "up-down" auto-carousel.
 - **Socials Card (1x1):** "07 / SOCIALS", Black card with dynamic interface bars.
 
 ### CTA Section
@@ -56,12 +60,16 @@ This document serves as the source of truth for the M.ARCHIVE boutique studio po
 - [x] Initial Hero section layout.
 - [x] Font pairing and integration (Bodoni Moda & Hanken Grotesk).
 - [x] Corrected background to strictly Light Theme.
-- [x] Iterative color grading for the "Husky Green" accent.
 - [x] Precise alignment of logo and typography.
 - [x] Refined header scale and interaction states.
 - [x] Adjusted page-wide spacing for premium framing.
 - [x] Implemented Bento Grid sections with standardized `rounded-xl` corners.
 - [x] Developed auto-playing Projects carousel with overlaid header and indicators.
+- [x] Refactored Strategy into the brand-aligned Domain card.
+- [x] Created the "Warm Parchment" utility palette for Tech Stack and Experience cards.
+- [x] Implemented vertical "up-down" Experience carousel.
+- [x] Built live GitHub dashboard for `NextMutant` with interactive heatmap and language analytics.
+- [x] Resolved hydration mismatches using mounted state gating.
 - [x] Created compact, sharp-bordered CTA section.
 - [x] Completed the detailed brand footer (Redesigned to `footer2.png` with container-aligned divider).
 - [x] Hidden global scrollbars for a cleaner UI.
@@ -70,6 +78,6 @@ This document serves as the source of truth for the M.ARCHIVE boutique studio po
 - [x] Refined .gitignore for cleaner repository management.
 
 ## 4. Current Status & Next Steps
-- **Currently Doing:** Project finalized and refined with high-fidelity interactions.
+- **Currently Doing:** Project finalized with high-fidelity live data integrations and refined layouts.
 - **Next Steps:**
   - Launch site or begin further content management integration.

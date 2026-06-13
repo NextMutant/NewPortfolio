@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { GitHubCalendar } from 'react-github-calendar';
 
 const projects = [
   {
@@ -48,10 +49,54 @@ const experiences = [
 ];
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
   const [activeProject, setActiveProject] = useState(0);
   const [activeExp, setActiveExp] = useState(0);
+  const [githubData, setGithubData] = useState<any>(null);
 
   useEffect(() => {
+    setMounted(true);
+    const fetchGithub = async () => {
+      try {
+        const [userRes, eventsRes, reposRes] = await Promise.all([
+          fetch("https://api.github.com/users/NextMutant"),
+          fetch("https://api.github.com/users/NextMutant/events/public?per_page=3"),
+          fetch("https://api.github.com/users/NextMutant/repos?per_page=100&sort=updated")
+        ]);
+        const user = await userRes.json();
+        const events = await eventsRes.json();
+        const repos = await reposRes.json();
+
+        // Aggregate languages
+        const langMap: { [key: string]: number } = {};
+        let totalRepos = 0;
+        if (Array.isArray(repos)) {
+          repos.forEach((repo: any) => {
+            if (repo.language) {
+              langMap[repo.language] = (langMap[repo.language] || 0) + 1;
+              totalRepos++;
+            }
+          });
+        }
+        const topLangs = Object.entries(langMap)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 2)
+          .map(([name, count]) => ({
+            name,
+            percentage: Math.round((count / totalRepos) * 100)
+          }));
+
+        setGithubData({ 
+          user, 
+          events: Array.isArray(events) ? events.slice(0, 3) : [], 
+          topLangs 
+        });
+      } catch (error) {
+        console.error("Error fetching GitHub data:", error);
+      }
+    };
+    fetchGithub();
+    
     const projectTimer = setInterval(() => {
       setActiveProject((prev) => (prev + 1) % projects.length);
     }, 4000);
@@ -238,19 +283,92 @@ export default function Home() {
       {/* Bento Grid Section 2 (b2.png) */}
       <section className="relative w-full max-w-[1400px] mx-auto px-12 md:px-32 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[320px]">
-          {/* 5. Art Direction Card (Horizontal 2x1) */}
-          <div className="md:col-span-2 bg-white rounded-xl p-12 border border-[#1A1A1A]/5 flex flex-col justify-between group hover:border-accent/30 transition-colors">
-            <div className="flex justify-between items-start">
+          {/* 5. GitHub Card (Live Dashboard) */}
+          <div className="md:col-span-2 bg-white rounded-xl p-8 md:p-10 border border-[#1A1A1A]/5 flex flex-col group hover:border-accent/30 transition-colors">
+            <div className="flex justify-between items-start mb-2">
               <div className="text-[11px] font-bold text-accent tracking-[0.3em] uppercase">05 / GITHUB</div>
-              <div className="h-12 w-12 rounded-full border border-[#1A1A1A]/10 flex items-center justify-center group-hover:bg-[#1A1A1A] group-hover:border-[#1A1A1A] transition-all duration-300">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#1A1A1A] group-hover:text-white transition-colors">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+              <a 
+                href="https://github.com/NextMutant" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="h-10 w-10 rounded-full border border-[#1A1A1A]/10 flex items-center justify-center hover:bg-[#1A1A1A] hover:border-[#1A1A1A] transition-all duration-300"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#1A1A1A] hover:text-white transition-colors">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
                 </svg>
-              </div>
+              </a>
             </div>
-            <div>
-              <h3 className="text-3xl font-serif font-medium mb-4">Art Direction</h3>
-              <p className="text-sm text-[#52525B] leading-relaxed max-w-[320px]">Elevating brand narratives through curated visual storytelling and high-fidelity production oversight.</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1">
+              {/* Left Side: Languages & Heatmap */}
+              <div className="flex flex-col">
+                {/* Language Bar Graph */}
+                <div className="mb-3 w-full md:w-2/3">
+                  <div className="text-[8px] font-bold text-accent tracking-[0.2em] uppercase mb-1">Tech Stack Distribution</div>
+                  <div className="h-1 w-full flex rounded-full overflow-hidden bg-[#1A1A1A]/5">
+                    {githubData?.topLangs?.map((lang: any, i: number) => {
+                      const colors = ['#325041', '#6D7C46'];
+                      return (
+                        <div 
+                          key={lang.name}
+                          style={{ width: `${lang.percentage}%`, backgroundColor: colors[i % colors.length] }}
+                          className="h-full border-r border-white/5 last:border-0"
+                        />
+                      );
+                    })}
+                  </div>
+                  <div className="mt-2 flex items-center gap-x-4">
+                    {githubData?.topLangs?.map((lang: any, i: number) => {
+                      const colors = ['#325041', '#6D7C46'];
+                      return (
+                        <div key={lang.name} className="flex items-center gap-1.5 whitespace-nowrap">
+                          <div className="h-1 w-1 rounded-full" style={{ backgroundColor: colors[i % colors.length] }} />
+                          <span className="text-[9px] font-medium text-[#1A1A1A] uppercase tracking-tight">{lang.name}</span>
+                          <span className="text-[9px] text-[#71717A]">{lang.percentage}%</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="github-calendar-wrapper w-full overflow-hidden flex justify-start pb-2 relative">
+                  {mounted && (
+                    <GitHubCalendar 
+                      username="NextMutant" 
+                      blockSize={5}
+                      blockMargin={2}
+                      fontSize={10}
+                      theme={{
+                        light: ['#EBEDF0', '#C6CEB1', '#99A873', '#6D7C46', '#325041'],
+                        dark: ['#EBEDF0', '#C6CEB1', '#99A873', '#6D7C46', '#325041']
+                      }}
+                    />
+                  )}
+                </div>
+                <div className="text-[8px] font-bold text-[#71717A] tracking-[0.2em] uppercase mt-3">Contribution Activity</div>
+              </div>
+
+              {/* Right Side: Recent Activity */}
+              <div className="flex flex-col border-l border-[#1A1A1A]/5 pl-8">
+                <div className="text-[9px] font-bold text-accent tracking-[0.2em] uppercase mb-1">Recent Events</div>
+                <div className="flex flex-col gap-4">
+                  {githubData?.events?.map((event: any, i: number) => (
+                    <div key={i} className="flex flex-col border-l-2 border-accent/10 pl-4 py-1">
+                      <span className="text-[10px] font-serif font-medium text-[#1A1A1A] line-clamp-1">
+                        {event.type.replace("Event", "")}: {event.repo.name.split("/")[1]}
+                      </span>
+                      <span className="text-[9px] text-[#71717A] mt-1">
+                        {new Date(event.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      </span>
+                    </div>
+                  )) || (
+                    <div className="animate-pulse flex flex-col gap-4">
+                      <div className="h-4 bg-[#1A1A1A]/5 w-full rounded"></div>
+                      <div className="h-4 bg-[#1A1A1A]/5 w-3/4 rounded"></div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
