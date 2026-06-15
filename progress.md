@@ -37,24 +37,24 @@ This document serves as the source of truth for the M.ARCHIVE boutique studio po
   - **Design:** Dark charcoal background (`#1A1A1A`).
   - **Header:** "02 / PROJECTS" and GitHub button overlaid on the image.
   - **Animation:** Auto-playing carousel cycling through 3 projects every 4 seconds.
-- **Capabilities (2x2):** Large accent-colored card (`#325041`) with background symbol.
-- **Domain Card (1x1):** "03 / DOMAIN", White card with accent-colored icon/label.
-- **Tech Stack Card (1x1):** "04 / TECH STACK", Warm parchment card (`#E4D5B7`) with charcoal text and animated pulse indicators.
+- **About & Education (2x2):** Large accent-colored card (`#325041`) with background symbol. Auto-playing carousel toggling between personal bio and academic history.
+- **Domain Card (1x1):** "03 / DOMAIN", White card featuring Full-Stack, Machine Learning, and DevOps with custom geometric abstract icons.
+- **Tech Stack Card (1x1):** "04 / TECH STACK", Warm parchment card (`#E4D5B7`) auto-carousel with 4 categories (Languages, Web, ML, Infrastructure) using official monochrome logos.
 - **GitHub Card (2x1):** "05 / GITHUB", Live dashboard for user `NextMutant`.
   - **Features:** High-fidelity interactive heatmap (Warm Green), Language distribution bar (Percentage-based), and Recent Event feed (last 3 events).
   - **Layout:** Top-aligned editorial dashboard with horizontal column split.
-- **Experience Card (1x1):** "06 / EXPERIENCE", Warm parchment card (`#E4D5B7`) with vertical "up-down" auto-carousel.
-- **Socials Card (1x1):** "07 / SOCIALS", Black card with dynamic interface bars.
+- **Experience Card (1x1):** "06 / EXPERIENCE", Warm parchment card (`#E4D5B7`) with vertical "up-down" auto-carousel featuring detailed roles at WorldQuant, IIIT Nagpur, E-Cell, and GDSC.
+- **Socials Card (1x1):** "07 / SOCIALS", Black card with functional links to LinkedIn, GitHub, Instagram, and Twitter using inline monochrome SVGs.
 
 ### CTA Section
-- **Style:** Compact, sharp-bordered card (`border-2`) based on `footercard.png`.
-- **Layout:** Two-column; "Let's build" and email on left, group of message/arrow icons on right.
+- **Style:** Compact, sharp-bordered card (`border-[3px]`) based on `footercard.png`.
+- **Layout:** Two-column; "Let's build" and personal email (`boseuttaran100@gmail.com`) on left, group of message/arrow icons on right. Open source availability text.
 - **Width:** Constrained to match the width of the "Visuals" card (50% width on desktop).
 
 ### Footer (Main)
 - **Style:** Minimalist three-column footer based on `footer2.png`.
 - **Layout:** Divider line restricted to the width of the content container.
-- **Content:** Left (Copyright), Center (Nav Links), Right (Location).
+- **Content:** Left (Copyright `2026 Uttaran Bose`), Center (Nav Links), Right (Location `Guwahati, Ind / Remote`).
 
 ## 3. Work Completed
 - [x] Initial Hero section layout.
@@ -65,13 +65,15 @@ This document serves as the source of truth for the M.ARCHIVE boutique studio po
 - [x] Adjusted page-wide spacing for premium framing.
 - [x] Implemented Bento Grid sections with standardized `rounded-xl` corners.
 - [x] Developed auto-playing Projects carousel with overlaid header and indicators.
-- [x] Refactored Strategy into the brand-aligned Domain card.
-- [x] Created the "Warm Parchment" utility palette for Tech Stack and Experience cards.
-- [x] Implemented vertical "up-down" Experience carousel.
+- [x] Converted About card into an auto-playing bio/education carousel.
+- [x] Refactored Strategy into a 3-part Domain card with custom abstract geometry.
+- [x] Upgraded Tech Stack into a 4-part carousel featuring official monochrome logos (React, Python, TF, Docker, etc.) via Simple Icons CDN.
+- [x] Implemented vertical "up-down" Experience carousel with 4 detailed quantitative roles.
 - [x] Built live GitHub dashboard for `NextMutant` with interactive heatmap and language analytics.
+- [x] Created functional Socials card with interactive inline SVGs for LinkedIn, GitHub, X, and Instagram.
 - [x] Resolved hydration mismatches using mounted state gating.
-- [x] Created compact, sharp-bordered CTA section.
-- [x] Completed the detailed brand footer (Redesigned to `footer2.png` with container-aligned divider).
+- [x] Created bold CTA section with personalized email and open-source collaboration status.
+- [x] Completed the detailed brand footer with localized details and updated 2026 copyright.
 - [x] Hidden global scrollbars for a cleaner UI.
 - [x] Optimized layout for above-the-fold visibility.
 - [x] Verified code quality with successful lint and build.

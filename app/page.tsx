@@ -27,24 +27,120 @@ const projects = [
 const experiences = [
   {
     id: 1,
-    org: "M.ARCHIVE STUDIO",
-    position: "Creative Director",
-    timeline: "2023 - PRESENT",
-    content: "Leading the design direction for premium digital experiences and editorial brand systems."
+    org: "WORLDQUANT",
+    position: "Quant Research Consultant",
+    timeline: "AUG 2025 – PRESENT",
+    content: "Engineered 150+ alpha signals with a 1.85 average Sharpe ratio. Processed 2TB of tick data via Brain engine, boosting out-of-sample IC by 22%."
   },
   {
     id: 2,
-    org: "DESIGN HUB",
-    position: "Senior Designer",
-    timeline: "2021 - 2023",
-    content: "Developed modular UI kits and high-fidelity prototypes for global tech enterprises."
+    org: "IIIT NAGPUR",
+    position: "Research Intern",
+    timeline: "JUNE 2024 – OCT 2025",
+    content: "Built a React/Redux research dashboard as sole engineer. Restructured Linux server HTTP API patterns to reduce response latency by 18%."
   },
   {
     id: 3,
-    org: "EDITORIAL LAB",
-    position: "Jr. Strategist",
-    timeline: "2019 - 2021",
-    content: "Synthesizing market trends into actionable design strategies for culture-forward brands."
+    org: "E-CELL, IIIT NAGPUR",
+    position: "Chapter Lead",
+    timeline: "AUG 2024 – DEC 2025",
+    content: "Led a 150+ member team to execute a 3-day E-Summit, boosting attendance by 35% and expanding operational budget by 40%."
+  },
+  {
+    id: 4,
+    org: "GDSC, IIIT NAGPUR",
+    position: "Lead",
+    timeline: "SEPT 2024 – SEPT 2025",
+    content: "Scaled membership by 60%. Launched a developer podcast series that tripled member retention and ranked the organization #1 on campus."
+  }
+];
+
+const education = [
+  {
+    id: 1,
+    degree: "B.Tech in Computer Science and Engineering",
+    school: "Indian Institute of Information Technology (IIIT) Nagpur",
+    timeline: "2023 — 2027"
+  },
+  {
+    id: 2,
+    degree: "Higher Secondary (Science)",
+    school: "Kendriya Vidyalaya Dimapur",
+    timeline: "Class of 2022"
+  },
+  {
+    id: 3,
+    degree: "High School",
+    school: "Kendriya Vidyalaya Dimapur",
+    timeline: "Class of 2020"
+  }
+];
+
+const techStacks = [
+  {
+    id: 1,
+    category: "Languages",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="square" className="text-[#1A1A1A] opacity-30">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+      </svg>
+    ),
+    logos: [
+      { name: "Python", slug: "python" },
+      { name: "JavaScript", slug: "javascript" },
+      { name: "C++", slug: "cplusplus" }
+    ]
+  },
+  {
+    id: 2,
+    category: "Web Development",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="square" className="text-[#1A1A1A] opacity-30">
+        <rect x="3" y="5" width="18" height="14" />
+        <path d="M7 12l2 2 2-2M13 12l2 2 2-2" />
+      </svg>
+    ),
+    logos: [
+      { name: "TypeScript", slug: "typescript" },
+      { name: "React", slug: "react" },
+      { name: "Express", slug: "express" },
+      { name: "Node.js", slug: "nodedotjs" },
+      { name: "FastAPI", slug: "fastapi" }
+    ]
+  },
+  {
+    id: 3,
+    category: "Machine Learning",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="square" className="text-[#1A1A1A] opacity-30">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" />
+      </svg>
+    ),
+    logos: [
+      { name: "TensorFlow", slug: "tensorflow" },
+      { name: "Scikit-learn", slug: "scikitlearn" },
+      { name: "OpenCV", slug: "opencv" },
+      { name: "LangChain", slug: "langchain" },
+      { name: "LangGraph", slug: "langgraph" }
+    ]
+  },
+  {
+    id: 4,
+    category: "Infrastructure",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="square" className="text-[#1A1A1A] opacity-30">
+        <path d="M4 14l8-4 8 4-8 4-8-4Z" />
+        <path d="M4 10l8-4 8 4-8 4-8-4Z" />
+        <path d="M4 6l8-4 8 4-8 4-8-4Z" />
+      </svg>
+    ),
+    logos: [
+      { name: "GitHub", slug: "github" },
+      { name: "Docker", slug: "docker" },
+      { name: "Redis", slug: "redis" },
+      { name: "Linux", slug: "linux" }
+    ]
   }
 ];
 
@@ -52,6 +148,8 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [activeProject, setActiveProject] = useState(0);
   const [activeExp, setActiveExp] = useState(0);
+  const [activeAbout, setActiveAbout] = useState(0);
+  const [activeTech, setActiveTech] = useState(0);
   const [githubData, setGithubData] = useState<any>(null);
 
   useEffect(() => {
@@ -105,9 +203,19 @@ export default function Home() {
       setActiveExp((prev) => (prev + 1) % experiences.length);
     }, 5000);
 
+    const aboutTimer = setInterval(() => {
+      setActiveAbout((prev) => (prev + 1) % 2);
+    }, 6000);
+
+    const techTimer = setInterval(() => {
+      setActiveTech((prev) => (prev + 1) % techStacks.length);
+    }, 4500);
+
     return () => {
       clearInterval(projectTimer);
       clearInterval(expTimer);
+      clearInterval(aboutTimer);
+      clearInterval(techTimer);
     };
   }, []);
 
@@ -175,24 +283,67 @@ export default function Home() {
       {/* Bento Grid Section 1 (b1.png) */}
       <section className="relative w-full max-w-[1400px] mx-auto px-12 md:px-32 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[320px]">
-          {/* 1. Main Capabilities Card (Large) */}
-          <div className="md:col-span-2 md:row-span-2 bg-accent rounded-xl p-12 flex flex-col justify-between relative overflow-hidden group">
-            <div className="z-10">
-              <span className="text-[12px] font-bold tracking-[0.4em] uppercase text-white/50 mb-6 block">Capabilities</span>
-              <h2 className="text-white text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-[1.1] tracking-tight">
-                Integrated <br />
-                <span className="italic opacity-80">Studio</span> <br />
-                Services.
-              </h2>
-            </div>
-            
-            <div className="z-10 flex items-center gap-4 text-white/60 text-[11px] font-bold tracking-[0.2em] uppercase">
-              <div className="h-[1px] w-8 bg-white/20"></div>
-              <span>Explore Our Approach</span>
+          {/* 1. Main About & Education Card (Large Carousel) */}
+          <div className="md:col-span-2 md:row-span-2 bg-accent rounded-xl relative overflow-hidden group">
+            <div className="h-full w-full p-12 flex flex-col relative z-10">
+              {/* Slide 1: About */}
+              <div className={`absolute inset-12 transition-all duration-1000 ease-in-out flex flex-col ${
+                activeAbout === 0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
+              }`}>
+                <span className="text-[12px] font-bold tracking-[0.4em] uppercase text-white/50 mb-10 block">About</span>
+                
+                <div className="max-w-[540px]">
+                  <h2 className="text-white text-3xl md:text-4xl lg:text-5xl font-serif font-light leading-[1.2] tracking-tight">
+                    I&apos;m <span className="font-black italic text-white">Uttaran</span>, a Computer Science student at <span className="opacity-80">IIIT Nagpur</span> who loves building <span className="italic opacity-90">fast, interactive</span> web systems.
+                  </h2>
+                  
+                  <p className="mt-8 text-white/60 text-sm md:text-base leading-relaxed font-normal max-w-[480px]">
+                    Specializing in <span className="text-white/90">React and Node.js</span>, I&apos;ve spent significant time developing <span className="italic text-white font-semibold">AI-driven tools</span>. At my core, I simply enjoy the art of <span className="text-white/90">solving problems</span> through clean, efficient code.
+                  </p>
+                </div>
+              </div>
+
+              {/* Slide 2: Education */}
+              <div className={`absolute inset-12 transition-all duration-1000 ease-in-out flex flex-col ${
+                activeAbout === 1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
+              }`}>
+                <span className="text-[12px] font-bold tracking-[0.4em] uppercase text-white/50 mb-10 block">Education</span>
+
+                <div className="flex flex-col gap-10">
+                  {education.map((item, index) => (
+                    <div key={item.id} className="relative group/edu">
+                      <div className="flex items-start gap-6">
+                        <span className="text-[10px] font-bold text-white/20 tracking-tighter mt-1.5">
+                          0{index + 1}
+                        </span>
+                        <div className="flex-1">
+                          <h3 className="text-white text-xl md:text-2xl font-serif font-light leading-tight group-hover/edu:text-white/90 transition-colors">
+                            {item.degree}
+                          </h3>
+                          <div className="mt-3 flex items-center gap-4">
+                            <div className="h-[1px] w-4 bg-white/20"></div>
+                            <span className="text-[11px] font-bold text-white/70 tracking-[0.15em] uppercase">
+                              {item.school}
+                            </span>
+                          </div>
+                          <div className="mt-2 pl-8">
+                            <span className="text-[10px] font-medium text-white/40 tracking-[0.2em] uppercase">
+                              {item.timeline}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                </div>
             </div>
 
             {/* Background Symbol */}
-            <div className="absolute -right-20 -bottom-20 opacity-10 group-hover:opacity-20 transition-opacity duration-1000 group-hover:rotate-12 transition-transform">
+            <div 
+              className="absolute -right-20 -bottom-20 opacity-10 group-hover:opacity-20 transition-all duration-1000"
+              style={{ transform: `rotate(${45 + (activeAbout * 45)}deg)` }}
+            >
                <svg width="400" height="400" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white">
                  <path d="M50 0L54.4903 45.5097L100 50L54.4903 54.4903L50 100L45.5097 54.4903L0 50L45.5097 45.5097L50 0Z" fill="currentColor"/>
                </svg>
@@ -254,26 +405,115 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 3. Domain Card (Formerly Strategy) */}
-          <div className="md:col-span-1 bg-white rounded-xl p-10 border border-[#1A1A1A]/5 flex flex-col justify-between group hover:border-accent/30 transition-colors">
-            <div className="text-[11px] font-bold text-accent tracking-[0.3em] uppercase">03 / DOMAIN</div>
-            <div>
-              <h3 className="text-2xl font-serif font-medium mb-2">Market <br />Positioning</h3>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-4 text-accent">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-              </svg>
+          {/* 3. Domain Card (Technical Focus) */}
+          <div className="md:col-span-1 bg-white rounded-xl p-10 border border-[#1A1A1A]/5 flex flex-col justify-between group hover:border-accent/30 transition-all duration-500">
+            <div className="text-[11px] font-bold text-accent tracking-[0.3em] uppercase mb-8">03 / DOMAIN</div>
+            
+            <div className="flex flex-col justify-between flex-1">
+              {[
+                { 
+                  title: "Full-Stack", 
+                  subtitle: "Development", 
+                  icon: (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="square" className="text-accent opacity-40 group-hover/item:opacity-100 group-hover/item:translate-x-1 transition-all">
+                      <rect x="3" y="5" width="18" height="14" />
+                      <line x1="3" y1="9" x2="21" y2="9" />
+                      <path d="M9 13l-2 2 2 2" />
+                      <path d="M15 13l2 2-2 2" />
+                    </svg>
+                  )
+                },
+                { 
+                  title: "Machine", 
+                  subtitle: "Learning", 
+                  icon: (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="square" className="text-accent opacity-40 group-hover/item:opacity-100 group-hover/item:translate-x-1 transition-all">
+                      <circle cx="6" cy="6" r="1.5" />
+                      <circle cx="6" cy="12" r="1.5" />
+                      <circle cx="6" cy="18" r="1.5" />
+                      <circle cx="12" cy="9" r="1.5" />
+                      <circle cx="12" cy="15" r="1.5" />
+                      <circle cx="18" cy="12" r="1.5" />
+                      <path d="M7.5 6L10.5 9M7.5 12L10.5 9M7.5 12L10.5 15M7.5 18L10.5 15" />
+                      <path d="M13.5 9L16.5 12M13.5 15L16.5 12" />
+                    </svg>
+                  )
+                },
+                { 
+                  title: "Cloud", 
+                  subtitle: "DevOps", 
+                  icon: (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="square" className="text-accent opacity-40 group-hover/item:opacity-100 group-hover/item:translate-x-1 transition-all">
+                      <path d="M4 14l8-4 8 4-8 4-8-4Z" />
+                      <path d="M4 10l8-4 8 4-8 4-8-4Z" />
+                      <path d="M4 6l8-4 8 4-8 4-8-4Z" />
+                    </svg>
+                  )
+                }
+              ].map((domain, i) => (
+                <div key={i} className="flex flex-col group/item cursor-default">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-serif font-medium text-[#1A1A1A] leading-tight group-hover/item:text-accent transition-colors">
+                      {domain.title} <br />
+                      <span className="text-[11px] font-sans font-bold tracking-[0.05em] uppercase text-[#71717A] group-hover/item:text-accent/60 transition-colors">
+                        {domain.subtitle}
+                      </span>
+                    </h3>
+                    {domain.icon}
+                  </div>
+                  <div className="mt-3 h-[1px] w-0 bg-accent/10 group-hover/item:w-full transition-all duration-500"></div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* 4. Tech Stack Card */}
-          <div className="md:col-span-1 bg-[#E4D5B7] rounded-xl p-10 flex flex-col justify-between group hover:brightness-95 transition-all">
-            <div className="text-[11px] font-bold text-[#1A1A1A]/60 tracking-[0.3em] uppercase">04 / TECH STACK</div>
-            <div>
-              <h3 className="text-2xl font-serif font-medium text-[#1A1A1A] mb-2">Experience <br />Design</h3>
-              <div className="mt-4 flex gap-2">
-                <div className="h-2 w-2 rounded-full bg-[#1A1A1A] animate-pulse"></div>
-                <div className="h-2 w-2 rounded-full bg-[#1A1A1A]/40"></div>
-                <div className="h-2 w-2 rounded-full bg-[#1A1A1A]/20"></div>
+          {/* 4. Tech Stack Card (Carousel) */}
+          <div className="md:col-span-1 bg-[#E4D5B7] rounded-xl relative overflow-hidden group hover:brightness-95 transition-all">
+            <div className="h-full w-full p-10 flex flex-col justify-between relative z-10">
+              <div className="text-[11px] font-bold text-[#1A1A1A]/60 tracking-[0.3em] uppercase">04 / TECH STACK</div>
+              
+              <div className="flex-1 relative mt-6">
+                {techStacks.map((stack, index) => (
+                  <div 
+                    key={stack.id}
+                    className={`absolute inset-0 transition-all duration-1000 ease-in-out flex flex-col justify-center ${
+                      index === activeTech ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8 pointer-events-none"
+                    }`}
+                  >
+                    <div className="flex items-center gap-4 mb-6">
+                      <h3 className="text-2xl font-serif font-medium text-[#1A1A1A]">{stack.category}</h3>
+                      <div className="mt-1">{stack.icon}</div>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-x-6 gap-y-8 max-w-[200px] justify-center lg:justify-start">
+                      {stack.logos.map((logo, i) => (
+                        <div key={i} className="group/logo relative flex flex-col items-center">
+                          <img 
+                            src={`https://cdn.simpleicons.org/${logo.slug}/1A1A1A`}
+                            alt={logo.name}
+                            className="h-6 w-6 opacity-40 group-hover/logo:opacity-100 transition-all duration-300"
+                          />
+                          <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] font-bold tracking-widest uppercase text-[#1A1A1A] opacity-0 group-hover/logo:opacity-40 transition-opacity whitespace-nowrap">
+                            {logo.name}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 flex gap-2">
+                {techStacks.map((_, index) => (
+                  <div 
+                    key={index}
+                    className={`h-1.5 w-1.5 rounded-full transition-all duration-500 ${
+                      index === activeTech 
+                        ? "bg-[#1A1A1A] scale-110" 
+                        : "bg-[#1A1A1A]/20"
+                    }`}
+                  ></div>
+                ))}
               </div>
             </div>
           </div>
@@ -389,7 +629,7 @@ export default function Home() {
                     <span className="text-[10px] font-bold text-[#1A1A1A] tracking-[0.1em] uppercase">{exp.position}</span>
                     <span className="text-[9px] font-medium text-[#1A1A1A]/60 tracking-wider">{exp.timeline}</span>
                   </div>
-                  <p className="text-xs text-[#1A1A1A]/80 leading-relaxed line-clamp-3">
+                  <p className="text-xs text-[#1A1A1A]/80 leading-relaxed line-clamp-6">
                     {exp.content}
                   </p>
                 </div>
@@ -409,18 +649,62 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 7. Motion Design Card (1x1) */}
-          <div className="md:col-span-1 bg-[#1A1A1A] rounded-xl p-10 flex flex-col justify-between group hover:bg-[#262626] transition-colors">
-            <div className="text-[11px] font-bold text-white/40 tracking-[0.3em] uppercase">07 / SOCIALS</div>
-            <div>
-              <h3 className="text-2xl font-serif font-medium text-white mb-2">Dynamic <br />Interfaces</h3>
-              <div className="mt-4 flex items-end gap-1 h-8">
-                <div className="w-1 bg-accent h-4 animate-pulse"></div>
-                <div className="w-1 bg-accent h-8 animate-pulse delay-75"></div>
-                <div className="w-1 bg-accent h-6 animate-pulse delay-150"></div>
-                <div className="w-1 bg-accent h-5 animate-pulse delay-300"></div>
-              </div>
+          {/* 7. Socials Card (1x1) */}
+          <div className="md:col-span-1 bg-[#1A1A1A] rounded-xl p-10 flex flex-col justify-start group hover:bg-[#262626] transition-colors relative overflow-hidden">
+            <div className="text-[11px] font-bold text-white/40 tracking-[0.3em] uppercase z-10 mb-12">07 / SOCIALS</div>
+            
+            <div className="flex flex-col gap-5 z-10">
+              {[
+                { 
+                  name: "LinkedIn", 
+                  url: "https://linkedin.com/in/uttaran-bose",
+                  icon: (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="opacity-30 group-hover/link:opacity-100 group-hover/link:translate-x-1 transition-all text-white">
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                  )
+                },
+                { 
+                  name: "GitHub", 
+                  slug: "github", 
+                  url: "https://github.com/NextMutant" 
+                },
+                { 
+                  name: "Instagram", 
+                  slug: "instagram", 
+                  url: "https://instagram.com/uttaran_bose" 
+                },
+                { 
+                  name: "Twitter", 
+                  slug: "x", 
+                  url: "https://twitter.com/uttaran_bose" 
+                }
+              ].map((social, i) => (
+                <a 
+                  key={i}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between group/link"
+                >
+                  <span className="text-sm font-bold tracking-wider text-white/60 group-hover/link:text-white transition-colors uppercase">
+                    {social.name}
+                  </span>
+                  {social.icon ? (
+                    social.icon
+                  ) : (
+                    <img 
+                      src={`https://cdn.simpleicons.org/${social.slug}/FFFFFF`}
+                      alt={social.name}
+                      className="h-4 w-4 opacity-30 group-hover/link:opacity-100 group-hover/link:translate-x-1 transition-all"
+                    />
+                  )}
+                </a>
+              ))}
             </div>
+
+            {/* Subtle background noise/pattern can be added here if needed, 
+                keeping it minimal as per user request */}
           </div>
 
         </div>
@@ -429,7 +713,7 @@ export default function Home() {
       {/* New CTA Card Section (footercard.png) */}
       <section className="relative w-full max-w-[1400px] mx-auto px-12 md:px-32 pb-24">
         <div className="grid grid-cols-1 md:grid-cols-4">
-          <div className="md:col-span-2 border-2 border-[#1A1A1A] bg-background px-8 py-6 md:px-10 md:py-8 flex flex-col md:flex-row justify-between items-start md:items-center group">
+          <div className="md:col-span-2 border-[3px] border-[#1A1A1A] bg-background px-8 py-10 md:px-10 md:py-12 flex flex-col md:flex-row justify-between items-start md:items-center group">
             {/* Left Column */}
             <div className="flex flex-col gap-3">
               <div className="font-serif italic text-lg md:text-xl text-[#1A1A1A]">
@@ -437,12 +721,11 @@ export default function Home() {
               </div>
               
               <div className="text-3xl md:text-4xl lg:text-5xl font-bold leading-[0.9] tracking-tighter text-[#1A1A1A]">
-                HELLO@M-<br />
-                ARCHIVE.STUDIO
+                boseuttaran100@<br />gmail.com
               </div>
 
-              <div className="text-[9px] font-bold tracking-[0.4em] uppercase text-[#71717A] mt-1">
-                Currently Accepting Q3/Q4 Bookings
+              <div className="text-[7.5px] font-bold tracking-[0.25em] uppercase text-[#71717A] mt-1 whitespace-nowrap">
+                CURRENTLY LOOKING TO COLLABORATE ON OPEN SOURCE PROJECTS
               </div>
             </div>
 
@@ -472,7 +755,7 @@ export default function Home() {
           <div className="pt-12 border-t border-[#1A1A1A]/5 flex flex-col md:flex-row justify-between items-center gap-8 md:gap-0 text-[10px] font-bold tracking-[0.3em] uppercase">
             {/* Left Group: Copyright */}
             <div className="text-[#71717A]">
-              © 2024 M. ARCHIVE STUDIO. ALL RIGHTS RESERVED.
+              © 2026 UTTARAN BOSE. ALL RIGHTS RESERVED.
             </div>
 
             {/* Center Group: Navigation Links */}
@@ -485,7 +768,7 @@ export default function Home() {
             {/* Right Group: Metadata/Location */}
             <div className="flex items-center gap-1">
               <span className="text-[#71717A] font-medium">Location:</span>
-              <span className="text-[#1A1A1A]">New York, NY / Remote</span>
+              <span className="text-[#1A1A1A]">Guwahati, Ind / Remote</span>
             </div>
           </div>
         </div>
