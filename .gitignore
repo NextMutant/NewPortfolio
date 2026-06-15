@@ -20,6 +20,7 @@
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+desktop.ini
 
 # debug
 npm-debug.log*
@@ -51,3 +52,6 @@ next-env.d.ts
 # Gemini/Agents
 .gemini/
 .agents/
+memory/
+memory_*.md
+*.tmp

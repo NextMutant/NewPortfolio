@@ -14,6 +14,16 @@
   --font-sans: var(--font-hanken-grotesk);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+@media (pointer: fine) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+}
+
 html, body {
   background: var(--background);
   color: var(--foreground);
@@ -39,4 +49,13 @@ html, body {
 .scrollbar-hide {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
 }

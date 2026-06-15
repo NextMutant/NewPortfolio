@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { GitHubCalendar } from 'react-github-calendar';
+import { motion, AnimatePresence } from "framer-motion";
 
 const projects = [
   {
@@ -146,14 +147,64 @@ const techStacks = [
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [activeProject, setActiveProject] = useState(0);
   const [activeExp, setActiveExp] = useState(0);
   const [activeAbout, setActiveAbout] = useState(0);
   const [activeTech, setActiveTech] = useState(0);
   const [githubData, setGithubData] = useState<any>(null);
+  
+  // Custom Cursor States
+  const mousePos = useRef({ x: 0, y: 0 });
+  const [followerPos, setFollowerPos] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const [dotPos, setDotPos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     setMounted(true);
+    
+    // Initial loading timer
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    // Mouse movement tracking
+    const handleMouseMove = (e: MouseEvent) => {
+      mousePos.current = { x: e.clientX, y: e.clientY };
+      setDotPos({ x: e.clientX, y: e.clientY });
+    };
+
+    // Hover detection for interactive elements
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === 'A' || 
+        target.tagName === 'BUTTON' || 
+        target.closest('a') || 
+        target.closest('button') ||
+        target.closest('.group') ||
+        target.closest('.cursor-pointer')
+      ) {
+        setIsHovering(true);
+      } else {
+        setIsHovering(false);
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseover", handleMouseOver);
+
+    // Smooth follower interpolation
+    let frameId: number;
+    const followMouse = () => {
+      setFollowerPos(prev => ({
+        x: prev.x + (mousePos.current.x - prev.x) * 0.15,
+        y: prev.y + (mousePos.current.y - prev.y) * 0.15
+      }));
+      frameId = requestAnimationFrame(followMouse);
+    };
+    frameId = requestAnimationFrame(followMouse);
+
     const fetchGithub = async () => {
       try {
         const [userRes, eventsRes, reposRes] = await Promise.all([
@@ -212,6 +263,10 @@ export default function Home() {
     }, 4500);
 
     return () => {
+      clearTimeout(timer);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseover", handleMouseOver);
+      cancelAnimationFrame(frameId);
       clearInterval(projectTimer);
       clearInterval(expTimer);
       clearInterval(aboutTimer);
@@ -221,95 +276,179 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-[#1A1A1A] font-sans selection:bg-accent selection:text-white flex flex-col items-center">
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            key="loader"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-[10000] bg-background flex items-center justify-center pointer-events-none"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ 
+                duration: 1, 
+                repeat: Infinity, 
+                repeatType: "reverse",
+                ease: "easeInOut" 
+              }}
+              className="text-4xl font-serif font-black tracking-tight text-[#1A1A1A]"
+            >
+              U.BOSE
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Custom Cursor */}
+      {mounted && (
+        <div className="hidden md:block pointer-events-none fixed inset-0 z-[9999]">
+          {/* Drafting Crosshair */}
+          <div 
+            className="fixed flex items-center justify-center transition-transform duration-200 ease-out"
+            style={{ 
+              left: `${dotPos.x}px`, 
+              top: `${dotPos.y}px`,
+              transform: `translate(-50%, -50%) scale(${isHovering ? 1.5 : 1})`
+            }}
+          >
+            <div className="absolute h-4 w-[1px] bg-accent"></div>
+            <div className="absolute w-4 h-[1px] bg-accent"></div>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 py-8 flex justify-center bg-background/80 backdrop-blur-sm border-b border-[#1A1A1A]/5">
+      <motion.nav 
+        initial={{ y: -100, opacity: 0 }}
+        animate={!loading ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+        className="fixed top-0 w-full z-50 py-8 flex justify-center bg-background/80 backdrop-blur-sm border-b border-[#1A1A1A]/5"
+      >
         <div className="w-full max-w-[1400px] px-12 md:px-32 flex justify-between items-center">
-          <div className="text-xl font-serif font-black tracking-tight cursor-pointer text-[#1A1A1A]">
-            M.ARCHIVE
+          <div className="text-2xl font-serif font-black tracking-tight cursor-pointer text-[#1A1A1A]">
+            U.BOSE
           </div>
           
           <div className="hidden md:flex gap-12 text-[13px] font-semibold tracking-[0.25em] uppercase text-[#262626]">
-            <a href="#" className="hover:text-[#1A1A1A] transition-colors">Projects</a>
-            <a href="#" className="hover:text-[#1A1A1A] transition-colors">About</a>
-            <a href="#" className="hover:text-[#1A1A1A] transition-colors">Writing</a>
-            <a href="#" className="hover:text-[#1A1A1A] transition-colors">Contact</a>
+            <a href="#projects" className="hover:text-[#1A1A1A] transition-colors">Projects</a>
+            <a href="#about" className="hover:text-[#1A1A1A] transition-colors">About</a>
+            <a href="#experience" className="hover:text-[#1A1A1A] transition-colors">Experience</a>
+            <a href="#socials" className="hover:text-[#1A1A1A] transition-colors">Contact</a>
           </div>
 
-          <button className="px-5 py-2 bg-[#1A1A1A] hover:bg-accent text-white rounded-full text-[13px] font-semibold tracking-[0.2em] uppercase transition-colors duration-300">
+          <a href="#contact" className="px-5 py-2 bg-[#1A1A1A] hover:bg-accent text-white rounded-full text-[13px] font-semibold tracking-[0.2em] uppercase transition-colors duration-300">
             Start a Project
-          </button>
+          </a>
         </div>
-      </nav>
+      </motion.nav>
 
       <main className="relative w-full max-w-[1400px] mx-auto px-12 md:px-32 flex flex-col justify-center min-h-[85vh] pt-32 pb-16">
         {/* Top Label */}
-        <div className="mb-10">
-          <span className="text-[15px] font-bold tracking-[0.4em] uppercase text-accent">
-            Design & Strategy 2024
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={!loading ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="mb-10"
+        >
+          <span className="text-[11px] font-bold tracking-[0.5em] uppercase text-[#263c31]">
+            FULL-STACK · MACHINE LEARNING · QUANT RESEARCH
           </span>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
           {/* Headline (Left 65%) */}
           <div className="lg:col-span-8">
-            <h1 className="text-6xl md:text-8xl lg:text-[130px] font-serif font-light leading-[0.85] tracking-[-0.05em] text-[#1A1A1A]">
-              Editorial <br />
-              <span className="italic text-accent">Integrity</span> in <br />
-              Digital Form.
+            <h1 className="text-6xl md:text-8xl lg:text-[110px] font-serif font-light leading-[0.9] tracking-[-0.04em] text-[#1A1A1A]">
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={!loading ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                transition={{ duration: 1, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              >
+                Code Meets <br />
+                <span className="italic text-accent">Cognition.</span>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={!loading ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                transition={{ duration: 1, delay: 1, ease: [0.16, 1, 0.3, 1] }}
+              >
+                Systems Meet <span className="italic text-accent">Scale.</span>
+              </motion.div>
             </h1>
           </div>
 
           {/* Body Text (Right 35% - constrained) */}
           <div className="lg:col-span-4 lg:pl-12">
-            <div className="max-w-[280px] ml-auto lg:ml-0">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={!loading ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.8, delay: 1.4 }}
+              className="max-w-[320px] ml-auto lg:ml-0"
+            >
               <p className="text-base md:text-lg font-normal leading-relaxed text-[#52525B] tracking-tight translate-y-4">
-                A boutique studio crafting elevated digital experiences for culture-forward brands through bento-inspired hierarchy and modular design.
+                A portfolio of full-stack engineering, applied ML research, and quantitative finance — built with the same modular rigor as the systems behind it.
               </p>
               
               {/* Scroll Indicator */}
-              <div className="mt-12 flex items-center gap-6 group cursor-pointer">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={!loading ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 1, delay: 1.8 }}
+                className="mt-12 flex items-center gap-6 group cursor-pointer"
+              >
                 <div className="h-[0.5px] w-16 bg-[#1A1A1A]/10 overflow-hidden">
                   <div className="h-full w-full bg-[#1A1A1A] -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out"></div>
                 </div>
                 <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-[#71717A] group-hover:text-[#1A1A1A] transition-colors">
                   Scroll to Explore
                 </span>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </main>
 
       {/* Bento Grid Section 1 (b1.png) */}
-      <section className="relative w-full max-w-[1400px] mx-auto px-12 md:px-32 pb-12">
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="relative w-full max-w-[1400px] mx-auto px-12 md:px-32 pb-12"
+      >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[320px]">
           {/* 1. Main About & Education Card (Large Carousel) */}
-          <div className="md:col-span-2 md:row-span-2 bg-accent rounded-xl relative overflow-hidden group">
-            <div className="h-full w-full p-12 flex flex-col relative z-10">
+          <div id="about" className="md:col-span-2 md:row-span-2 bg-accent rounded-xl relative overflow-hidden group">
+            <div className="h-full w-full relative z-10">
               {/* Slide 1: About */}
-              <div className={`absolute inset-12 transition-all duration-1000 ease-in-out flex flex-col ${
+              <div className={`absolute inset-0 p-10 md:p-14 transition-all duration-1000 ease-in-out flex flex-col justify-center ${
                 activeAbout === 0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
               }`}>
-                <span className="text-[12px] font-bold tracking-[0.4em] uppercase text-white/50 mb-10 block">About</span>
-                
-                <div className="max-w-[540px]">
-                  <h2 className="text-white text-3xl md:text-4xl lg:text-5xl font-serif font-light leading-[1.2] tracking-tight">
-                    I&apos;m <span className="font-black italic text-white">Uttaran</span>, a Computer Science student at <span className="opacity-80">IIIT Nagpur</span> who loves building <span className="italic opacity-90">fast, interactive</span> web systems.
-                  </h2>
+                <div className="flex flex-col gap-6">
+                  <span className="text-[12px] font-bold tracking-[0.4em] uppercase text-white/50 block">About</span>
                   
-                  <p className="mt-8 text-white/60 text-sm md:text-base leading-relaxed font-normal max-w-[480px]">
-                    Specializing in <span className="text-white/90">React and Node.js</span>, I&apos;ve spent significant time developing <span className="italic text-white font-semibold">AI-driven tools</span>. At my core, I simply enjoy the art of <span className="text-white/90">solving problems</span> through clean, efficient code.
-                  </p>
+                  <div className="max-w-[540px]">
+                    <h2 className="text-white text-3xl md:text-4xl lg:text-5xl font-serif font-light leading-[1.1] tracking-tight">
+                      I&apos;m <span className="font-black italic text-white">Uttaran</span>, a Computer Science student at <span className="opacity-80">IIIT Nagpur</span> who loves building <span className="italic opacity-90">fast, interactive</span> web systems.
+                    </h2>
+                    
+                    <p className="mt-8 text-white/60 text-sm md:text-base leading-relaxed font-normal max-w-[440px]">
+                      Specializing in <span className="text-white/90">React and Node.js</span>, I&apos;ve spent significant time developing <span className="italic text-white font-semibold">AI-driven tools</span>. At my core, I simply enjoy the art of <span className="text-white/90">solving problems</span> through clean, efficient code.
+                    </p>
+                  </div>
                 </div>
               </div>
 
               {/* Slide 2: Education */}
-              <div className={`absolute inset-12 transition-all duration-1000 ease-in-out flex flex-col ${
+              <div className={`absolute inset-0 p-10 md:p-14 transition-all duration-1000 ease-in-out flex flex-col ${
                 activeAbout === 1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
               }`}>
                 <span className="text-[12px] font-bold tracking-[0.4em] uppercase text-white/50 mb-10 block">Education</span>
 
-                <div className="flex flex-col gap-10">
+                <div className="flex flex-col gap-8">
                   {education.map((item, index) => (
                     <div key={item.id} className="relative group/edu">
                       <div className="flex items-start gap-6">
@@ -320,13 +459,13 @@ export default function Home() {
                           <h3 className="text-white text-xl md:text-2xl font-serif font-light leading-tight group-hover/edu:text-white/90 transition-colors">
                             {item.degree}
                           </h3>
-                          <div className="mt-3 flex items-center gap-4">
+                          <div className="mt-2 flex items-center gap-4">
                             <div className="h-[1px] w-4 bg-white/20"></div>
                             <span className="text-[11px] font-bold text-white/70 tracking-[0.15em] uppercase">
                               {item.school}
                             </span>
                           </div>
-                          <div className="mt-2 pl-8">
+                          <div className="mt-1 pl-8">
                             <span className="text-[10px] font-medium text-white/40 tracking-[0.2em] uppercase">
                               {item.timeline}
                             </span>
@@ -336,7 +475,7 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                </div>
+              </div>
             </div>
 
             {/* Background Symbol */}
@@ -351,7 +490,7 @@ export default function Home() {
           </div>
 
           {/* 2. GitHub Card (Formerly Branding) */}
-          <div className="md:col-span-2 bg-[#1A1A1A] rounded-xl flex flex-col overflow-hidden group hover:bg-[#262626] transition-colors relative">
+          <div id="projects" className="md:col-span-2 bg-[#1A1A1A] rounded-xl flex flex-col overflow-hidden group hover:bg-[#262626] transition-colors relative">
             {/* Top Image Section with Overlays */}
             <div className="h-[200px] relative overflow-hidden bg-[#262626] border-b border-white/5">
               {projects.map((project, index) => (
@@ -518,10 +657,16 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Bento Grid Section 2 (b2.png) */}
-      <section className="relative w-full max-w-[1400px] mx-auto px-12 md:px-32 pb-12">
+      <motion.section 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="relative w-full max-w-[1400px] mx-auto px-12 md:px-32 pb-12"
+      >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[320px]">
           {/* 5. GitHub Card (Live Dashboard) */}
           <div className="md:col-span-2 bg-white rounded-xl p-8 md:p-10 border border-[#1A1A1A]/5 flex flex-col group hover:border-accent/30 transition-colors">
@@ -613,7 +758,7 @@ export default function Home() {
           </div>
 
           {/* 6. Experience Card (Vertical Carousel) */}
-          <div className="md:col-span-1 bg-[#E4D5B7] rounded-xl p-10 flex flex-col justify-between group hover:brightness-95 transition-all overflow-hidden relative">
+          <div id="experience" className="md:col-span-1 bg-[#E4D5B7] rounded-xl p-10 flex flex-col justify-between group hover:brightness-95 transition-all overflow-hidden relative">
             <div className="text-[11px] font-bold text-[#1A1A1A]/60 tracking-[0.3em] uppercase z-10">06 / EXPERIENCE</div>
             
             <div className="flex-1 relative mt-8">
@@ -650,14 +795,14 @@ export default function Home() {
           </div>
 
           {/* 7. Socials Card (1x1) */}
-          <div className="md:col-span-1 bg-[#1A1A1A] rounded-xl p-10 flex flex-col justify-start group hover:bg-[#262626] transition-colors relative overflow-hidden">
+          <div id="socials" className="md:col-span-1 bg-[#1A1A1A] rounded-xl p-10 flex flex-col justify-start group hover:bg-[#262626] transition-colors relative overflow-hidden">
             <div className="text-[11px] font-bold text-white/40 tracking-[0.3em] uppercase z-10 mb-12">07 / SOCIALS</div>
             
             <div className="flex flex-col gap-5 z-10">
               {[
                 { 
                   name: "LinkedIn", 
-                  url: "https://linkedin.com/in/uttaran-bose",
+                  url: "https://www.linkedin.com/in/uttaranbose/",
                   icon: (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="opacity-30 group-hover/link:opacity-100 group-hover/link:translate-x-1 transition-all text-white">
                       <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
@@ -672,12 +817,12 @@ export default function Home() {
                 { 
                   name: "Instagram", 
                   slug: "instagram", 
-                  url: "https://instagram.com/uttaran_bose" 
+                  url: "https://www.instagram.com/_shaan_100/" 
                 },
                 { 
                   name: "Twitter", 
                   slug: "x", 
-                  url: "https://twitter.com/uttaran_bose" 
+                  url: "https://x.com/sanelyShaan" 
                 }
               ].map((social, i) => (
                 <a 
@@ -706,51 +851,106 @@ export default function Home() {
             {/* Subtle background noise/pattern can be added here if needed, 
                 keeping it minimal as per user request */}
           </div>
+          </div>
+          </motion.section>
 
-        </div>
-      </section>
-
-      {/* New CTA Card Section (footercard.png) */}
-      <section className="relative w-full max-w-[1400px] mx-auto px-12 md:px-32 pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-4">
-          <div className="md:col-span-2 border-[3px] border-[#1A1A1A] bg-background px-8 py-10 md:px-10 md:py-12 flex flex-col md:flex-row justify-between items-start md:items-center group">
+          {/* New CTA Card Section (footercard.png) */}
+          <motion.section 
+          id="contact" 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-[1400px] mx-auto px-12 md:px-32 pb-24"
+          >
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+          <div className="lg:col-span-9 border-[3px] border-[#1A1A1A] bg-background px-8 py-10 md:px-14 md:py-16 flex flex-col md:flex-row justify-between items-start md:items-center group relative overflow-hidden order-2 lg:order-1">
+            {/* Background Accent Flaring */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-accent opacity-0 group-hover:opacity-[0.03] rounded-full blur-3xl transition-opacity duration-700"></div>
+            
             {/* Left Column */}
-            <div className="flex flex-col gap-3">
-              <div className="font-serif italic text-lg md:text-xl text-[#1A1A1A]">
+            <div className="flex flex-col gap-4 relative z-10">
+              <div className="font-serif italic text-2xl md:text-3xl text-accent">
                 Let&apos;s build.
               </div>
               
-              <div className="text-3xl md:text-4xl lg:text-5xl font-bold leading-[0.9] tracking-tighter text-[#1A1A1A]">
+              <div className="text-4xl md:text-5xl lg:text-7xl font-bold leading-[0.85] tracking-tighter text-[#1A1A1A]">
                 boseuttaran100@<br />gmail.com
               </div>
 
-              <div className="text-[7.5px] font-bold tracking-[0.25em] uppercase text-[#71717A] mt-1 whitespace-nowrap">
-                CURRENTLY LOOKING TO COLLABORATE ON OPEN SOURCE PROJECTS
+              <div className="mt-4 flex items-center gap-4">
+                <div className="h-[2px] w-8 bg-accent/20"></div>
+                <div className="text-[9px] font-bold tracking-[0.3em] uppercase text-[#71717A]">
+                  AVAILABLE FOR OPEN SOURCE & FREELANCE
+                </div>
               </div>
             </div>
 
             {/* Right Column */}
-            <div className="flex flex-col items-end gap-4 mt-8 md:mt-0">
+            <div className="flex flex-col items-end gap-8 mt-12 md:mt-0 relative z-10">
               {/* Paper Airplane Icon */}
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-              </svg>
+              <div className="opacity-20 group-hover:opacity-100 group-hover:-translate-y-2 group-hover:translate-x-2 transition-all duration-500">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </div>
 
               {/* Circular Button */}
-              <div className="h-12 w-12 rounded-full bg-[#1A1A1A] flex items-center justify-center group-hover:bg-accent transition-colors duration-500 cursor-pointer">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <a 
+                href="mailto:boseuttaran100@gmail.com"
+                className="h-16 w-16 rounded-full bg-[#1A1A1A] flex items-center justify-center group-hover:bg-accent transition-all duration-500 cursor-pointer shadow-lg group-hover:shadow-accent/20"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                   <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
+              </a>
+            </div>
+          </div>
+
+          {/* Profile Image (Visuals Card) */}
+          <div className="hidden lg:block lg:col-span-3 order-1 lg:order-2 self-stretch">
+            <div className="relative group h-full bg-[#D0C8B6] rounded-xl overflow-hidden border border-[#1A1A1A]/5 flex flex-col">
+              {/* Header Label - Matching Bento Style */}
+              <div className="p-6 md:p-8 flex justify-between items-center relative z-20">
+                <div className="text-[10px] font-bold text-[#1A1A1A]/80 tracking-[0.3em] uppercase">08 / PORTRAIT</div>
+                <div className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse"></div>
+              </div>
+
+              {/* Image Container */}
+              <div className="flex-1 relative overflow-hidden mx-6 mb-6 md:mx-8 md:mb-8 rounded-lg">
+                <img 
+                  src="/profile (1).svg" 
+                  alt="Uttaran Bose" 
+                  className="absolute inset-0 w-full h-full object-cover contrast-[1.05] brightness-90 group-hover:brightness-95 group-hover:scale-105 transition-all duration-1000 ease-out"
+                />
+                
+                {/* Subtle Overlay Pattern */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+              </div>
+
+              {/* Bottom Metadata */}
+              <div className="px-6 pb-6 md:px-8 md:pb-8 mt-auto relative z-20">
+                <div className="h-[1px] w-8 bg-[#1A1A1A]/20 mb-3"></div>
+                <div className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#1A1A1A]/70">
+                  Uttaran Bose <br />
+                  <span className="text-accent/90">Creative Engineer</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Footer (Absolute Literal) */}
-      <footer className="w-full bg-background py-16">
+      <motion.footer 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, delay: 0.2 }}
+        className="w-full bg-background py-16"
+      >
         <div className="max-w-[1400px] mx-auto px-12 md:px-32">
           <div className="pt-12 border-t border-[#1A1A1A]/5 flex flex-col md:flex-row justify-between items-center gap-8 md:gap-0 text-[10px] font-bold tracking-[0.3em] uppercase">
             {/* Left Group: Copyright */}
@@ -772,7 +972,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </footer>
+      </motion.footer>
     </div>
   );
 }

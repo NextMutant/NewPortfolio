@@ -13,8 +13,11 @@ const hankenGrotesk = Hanken_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "M.ARCHIVE | Design & Strategy",
+  title: "UttaranBose",
   description: "A boutique studio crafting elevated digital experiences.",
+  icons: {
+    icon: "/profile (1).svg",
+  },
 };
 
 export default function RootLayout({
