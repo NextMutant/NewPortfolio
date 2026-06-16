@@ -361,7 +361,7 @@ export default function Home() {
             <a href="#socials" className="hover:text-[#1A1A1A] transition-colors">Contact</a>
           </div>
 
-          <a href="#contact" className="px-5 py-2 bg-[#1A1A1A] hover:bg-accent text-white rounded-full text-[13px] font-semibold tracking-[0.2em] uppercase transition-colors duration-300">
+          <a href="mailto:boseuttaran100@gmail.com" className="px-5 py-2 bg-[#1A1A1A] hover:bg-accent text-white rounded-full text-[13px] font-semibold tracking-[0.2em] uppercase transition-colors duration-300">
             Start a Project
           </a>
         </div>
@@ -893,19 +893,26 @@ export default function Home() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-[1400px] mx-auto px-12 md:px-32 pb-24"
+          className="relative w-full max-w-[1400px] mx-auto px-12 md:px-32 pb-24 group"
           >
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-9 border-[3px] border-[#1A1A1A] bg-background px-8 py-10 md:px-14 md:py-16 flex flex-col md:flex-row justify-between items-start md:items-center group relative overflow-hidden order-2 lg:order-1">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center relative">
+          {/* Entire Card Clickable Area */}
+          <a 
+            href="mailto:boseuttaran100@gmail.com" 
+            className="absolute inset-0 z-30 cursor-pointer"
+            aria-label="Email Uttaran Bose"
+          ></a>
+
+          <div className="lg:col-span-9 border-[3px] border-[#1A1A1A] bg-background px-8 py-10 md:px-14 md:py-16 flex flex-col md:flex-row justify-between items-start md:items-center relative overflow-hidden order-2 lg:order-1 transition-colors duration-500">
             {/* Background Accent Flaring */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-accent opacity-0 group-hover:opacity-[0.03] rounded-full blur-3xl transition-opacity duration-700"></div>
-            
+
             {/* Left Column */}
             <div className="flex flex-col gap-4 relative z-10">
               <div className="font-serif italic text-2xl md:text-3xl text-accent">
                 Let&apos;s build.
               </div>
-              
+
               <div className="text-4xl md:text-5xl lg:text-7xl font-bold leading-[0.85] tracking-tighter text-[#1A1A1A]">
                 boseuttaran100@<br />gmail.com
               </div>
@@ -928,22 +935,21 @@ export default function Home() {
                 </svg>
               </div>
 
-              {/* Circular Button */}
-              <a 
-                href="mailto:boseuttaran100@gmail.com"
-                className="h-16 w-16 rounded-full bg-[#1A1A1A] flex items-center justify-center group-hover:bg-accent transition-all duration-500 cursor-pointer shadow-lg group-hover:shadow-accent/20"
+              {/* Circular Button Style */}
+              <div 
+                className="h-16 w-16 rounded-full bg-[#1A1A1A] flex items-center justify-center group-hover:bg-accent transition-all duration-500 shadow-lg group-hover:shadow-accent/20"
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                   <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
-              </a>
+              </div>
             </div>
           </div>
 
           {/* Profile Image (Visuals Card) */}
           <div className="hidden lg:block lg:col-span-3 order-1 lg:order-2 self-stretch">
-            <div className="relative group h-full bg-[#D0C8B6] rounded-xl overflow-hidden border border-[#1A1A1A]/5 flex flex-col">
+            <div className="relative h-full bg-[#D0C8B6] rounded-xl overflow-hidden border border-[#1A1A1A]/5 flex flex-col">
               {/* Header Label - Matching Bento Style */}
               <div className="p-6 md:p-8 flex justify-between items-center relative z-20">
                 <div className="text-[10px] font-bold text-[#1A1A1A]/80 tracking-[0.3em] uppercase">08 / PORTRAIT</div>
@@ -957,7 +963,7 @@ export default function Home() {
                   alt="Uttaran Bose" 
                   className="absolute inset-0 w-full h-full object-cover contrast-[1.05] brightness-90 group-hover:brightness-95 group-hover:scale-105 transition-all duration-1000 ease-out"
                 />
-                
+
                 {/* Subtle Overlay Pattern */}
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
               </div>
@@ -972,8 +978,8 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
-      </motion.section>
+          </div>
+          </motion.section>
 
       {/* Footer (Absolute Literal) */}
       <motion.footer 
