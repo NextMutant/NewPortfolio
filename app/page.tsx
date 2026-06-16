@@ -28,10 +28,10 @@ const projects = [
   },
   {
     id: 4,
-    title: "Splyt",
+    title: "Spylt",
     description: "A replica of website that has won an Awwwards Site of the Day. This is a stunning, interactive site using GSAP, ReactJS, and Tailwind CSS.",
     image: "/sp.png",
-    link: "https://github.com/NextMutant/Splyt_Replica"
+    link: "https://splyt-replica.vercel.app/"
   },
   {
     id: 5,

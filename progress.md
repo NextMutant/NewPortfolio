@@ -43,7 +43,7 @@ This document serves as the source of truth for the U.BOSE boutique studio portf
   - **Design:** Dark charcoal background (`#1A1A1A`).
   - **Header:** "02 / PROJECTS" and **clickable GitHub button** linked to specific project repositories.
   - **Animation:** Auto-playing carousel cycling through 5 projects every 4 seconds.
-  - **Content:** Project Planner MCP, Research Mind, FootBall Analysis, Splyt, and Portfolio Optimization.
+  - **Content:** Project Planner MCP, Research Mind, FootBall Analysis, Spylt, and Portfolio Optimization.
 - **About & Education (2x2):** Large accent-colored card (`#325041`) with background symbol. Auto-playing carousel toggling between personal bio and academic history. Optimized for stability and readability.
 - **Domain Card (1x1):** "03 / DOMAIN", White card featuring Full-Stack, Machine Learning, and DevOps with custom geometric abstract icons.
 - **Tech Stack Card (1x1):** "04 / TECH STACK", Warm parchment card (`#E4D5B7`) auto-carousel with 4 categories (Languages, Web, ML, Infrastructure) using official monochrome logos. **Updated interval: 2.5s**.
