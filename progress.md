@@ -41,16 +41,17 @@ This document serves as the source of truth for the U.BOSE boutique studio portf
 - **Architecture:** Multiple distinct cards using a consistent `rounded-xl` (12px) radius.
 - **Projects Card (Carousel):**
   - **Design:** Dark charcoal background (`#1A1A1A`).
-  - **Header:** "02 / PROJECTS" and GitHub button overlaid on the image.
-  - **Animation:** Auto-playing carousel cycling through 3 projects every 4 seconds.
+  - **Header:** "02 / PROJECTS" and **clickable GitHub button** linked to specific project repositories.
+  - **Animation:** Auto-playing carousel cycling through 5 projects every 4 seconds.
+  - **Content:** Project Planner MCP, Research Mind, FootBall Analysis, Splyt, and Portfolio Optimization.
 - **About & Education (2x2):** Large accent-colored card (`#325041`) with background symbol. Auto-playing carousel toggling between personal bio and academic history. Optimized for stability and readability.
 - **Domain Card (1x1):** "03 / DOMAIN", White card featuring Full-Stack, Machine Learning, and DevOps with custom geometric abstract icons.
-- **Tech Stack Card (1x1):** "04 / TECH STACK", Warm parchment card (`#E4D5B7`) auto-carousel with 4 categories (Languages, Web, ML, Infrastructure) using official monochrome logos.
+- **Tech Stack Card (1x1):** "04 / TECH STACK", Warm parchment card (`#E4D5B7`) auto-carousel with 4 categories (Languages, Web, ML, Infrastructure) using official monochrome logos. **Updated interval: 2.5s**.
 - **GitHub Card (2x1):** "05 / GITHUB", Live dashboard for user `NextMutant`.
   - **Features:** High-fidelity interactive heatmap (Warm Green), Language distribution bar (Percentage-based), and Recent Event feed (last 3 events).
 - **Experience Card (1x1):** "06 / EXPERIENCE", Warm parchment card (`#E4D5B7`) with vertical "up-down" auto-carousel featuring detailed roles at WorldQuant, IIIT Nagpur, E-Cell, and GDSC.
 - **Socials Card (1x1):** "07 / SOCIALS", Black card with functional links to LinkedIn, GitHub, Instagram, and Twitter.
-- **Visuals Card (Portrait):** "08 / PORTRAIT", High-fidelity editorial portrait of Uttaran Bose. The image is kept in full color with a slightly reduced brightness/contrast to blend naturally with the Warm Dusty Canvas background, lifting slightly on hover.
+- **Visuals Card (Portrait):** "08 / PORTRAIT", High-fidelity editorial portrait of Uttaran Bose. The image is kept in full color with a slightly reduced brightness/contrast to blend naturally with the Warm Dusty Canvas background, lifting slightly on hover. **Job Title updated to Software Engineer.**
 
 ### CTA Section
 - **Style:** Compact, sharp-bordered card (`border-[3px]`) based on `footercard.png` with a "Let's build" lead-in.
@@ -73,8 +74,13 @@ This document serves as the source of truth for the U.BOSE boutique studio portf
 - [x] Implemented scroll-triggered reveal animations for all bento and CTA sections.
 - [x] Verified code quality with successful production builds.
 - [x] Cleaned up repository by deleting unused assets and optimizing .gitignore.
+- [x] **Updated Job Title to Software Engineer.**
+- [x] **Added 5 new high-impact projects with GitHub links and specific preview images.**
+- [x] **Relinked project repositories to the GitHub icon for better UX.**
+- [x] **Optimized Tech Stack carousel timing to 2.5s.**
+- [x] **Updated Portfolio Optimization project image to port.png.**
 
 ## 4. Current Status & Next Steps
-- **Currently Doing:** Project finalized.
+- **Currently Doing:** Final review and documentation update.
 - **Next Steps:**
   - Launch site.

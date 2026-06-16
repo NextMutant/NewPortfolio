@@ -7,21 +7,38 @@ import { motion, AnimatePresence } from "framer-motion";
 const projects = [
   {
     id: 1,
-    title: "Open Source",
-    description: "Exploring the intersection of code and design through curated repositories and modular UI experiments.",
-    image: "/landing.png"
+    title: "Project Planner MCP",
+    description: "A remote Model Context Protocol server that lets AI assistants create projects, manage todos, and build structured product plans.",
+    image: "/pp.png",
+    link: "https://github.com/NextMutant/Project_Planner_MCP"
   },
   {
     id: 2,
-    title: "Digital Systems",
-    description: "Architecting scalable design foundations for high-growth startups and creative enterprises.",
-    image: "/b1.png"
+    title: "Research Mind",
+    description: "An intelligent research automation platform leveraging multiple AI agents to conduct comprehensive research, synthesize information, and generate polished research reports.",
+    image: "/rm.png",
+    link: "https://github.com/NextMutant/ResearchMInd-Multi_agent_Rag"
   },
   {
     id: 3,
-    title: "Brand Identity",
-    description: "Crafting timeless visual narratives that define and elevate boutique brands in the digital age.",
-    image: "/b2.png"
+    title: "FootBall Analysis",
+    description: "A computer vision pipeline to detect and track multiple objects (players, referees, and ball) in football video footage, designed to handle real-world challenges such as occlusion, camera movement, and fast player motion.",
+    image: "/fb.png",
+    link: "https://github.com/NextMutant/FootballAnalysis_opencv"
+  },
+  {
+    id: 4,
+    title: "Splyt",
+    description: "A replica of website that has won an Awwwards Site of the Day. This is a stunning, interactive site using GSAP, ReactJS, and Tailwind CSS.",
+    image: "/sp.png",
+    link: "https://github.com/NextMutant/Splyt_Replica"
+  },
+  {
+    id: 5,
+    title: "Static And Dynamic Portfolio Optimization",
+    description: "This project implements static portfolio optimization using various criteria to optimize asset allocation in a portfolio.",
+    image: "/port.png",
+    link: "https://github.com/NextMutant/Static_and_Dynamic_protfolio_optimization"
   }
 ];
 
@@ -145,6 +162,20 @@ const techStacks = [
   }
 ];
 
+interface GithubData {
+  user: {
+    avatar_url: string;
+    login: string;
+    html_url: string;
+  };
+  events: {
+    type: string;
+    repo: { name: string };
+    created_at: string;
+  }[];
+  topLangs: { name: string; percentage: number }[];
+}
+
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -152,19 +183,21 @@ export default function Home() {
   const [activeExp, setActiveExp] = useState(0);
   const [activeAbout, setActiveAbout] = useState(0);
   const [activeTech, setActiveTech] = useState(0);
-  const [githubData, setGithubData] = useState<any>(null);
-  
+  const [githubData, setGithubData] = useState<GithubData | null>(null);
+
   // Custom Cursor States
   const mousePos = useRef({ x: 0, y: 0 });
-  const [followerPos, setFollowerPos] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [dotPos, setDotPos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    setMounted(true);
-    
+    // Avoid synchronous setState in effect for hydration
+    const mountedTimer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+
     // Initial loading timer
-    const timer = setTimeout(() => {
+    const loadingTimer = setTimeout(() => {
       setLoading(false);
     }, 2000);
 
@@ -194,17 +227,6 @@ export default function Home() {
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseover", handleMouseOver);
 
-    // Smooth follower interpolation
-    let frameId: number;
-    const followMouse = () => {
-      setFollowerPos(prev => ({
-        x: prev.x + (mousePos.current.x - prev.x) * 0.15,
-        y: prev.y + (mousePos.current.y - prev.y) * 0.15
-      }));
-      frameId = requestAnimationFrame(followMouse);
-    };
-    frameId = requestAnimationFrame(followMouse);
-
     const fetchGithub = async () => {
       try {
         const [userRes, eventsRes, reposRes] = await Promise.all([
@@ -220,7 +242,7 @@ export default function Home() {
         const langMap: { [key: string]: number } = {};
         let totalRepos = 0;
         if (Array.isArray(repos)) {
-          repos.forEach((repo: any) => {
+          repos.forEach((repo: { language: string }) => {
             if (repo.language) {
               langMap[repo.language] = (langMap[repo.language] || 0) + 1;
               totalRepos++;
@@ -245,11 +267,11 @@ export default function Home() {
       }
     };
     fetchGithub();
-    
+
     const projectTimer = setInterval(() => {
       setActiveProject((prev) => (prev + 1) % projects.length);
     }, 4000);
-    
+
     const expTimer = setInterval(() => {
       setActiveExp((prev) => (prev + 1) % experiences.length);
     }, 5000);
@@ -260,13 +282,13 @@ export default function Home() {
 
     const techTimer = setInterval(() => {
       setActiveTech((prev) => (prev + 1) % techStacks.length);
-    }, 4500);
+    }, 2500);
 
     return () => {
-      clearTimeout(timer);
+      clearTimeout(mountedTimer);
+      clearTimeout(loadingTimer);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseover", handleMouseOver);
-      cancelAnimationFrame(frameId);
       clearInterval(projectTimer);
       clearInterval(expTimer);
       clearInterval(aboutTimer);
@@ -508,11 +530,21 @@ export default function Home() {
               {/* Floating Header on Image */}
               <div className="absolute top-0 w-full p-8 md:p-10 flex justify-between items-start z-10">
                 <div className="text-[11px] font-bold text-white tracking-[0.3em] uppercase drop-shadow-sm">02 / PROJECTS</div>
-                <div className="h-10 w-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center group-hover:bg-[#52525B] transition-colors duration-300">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                  </svg>
-                </div>
+                {projects.map((project, index) => (
+                  <a
+                    key={project.id}
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`h-10 w-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-[#52525B] transition-colors duration-300 absolute right-8 md:right-10 ${
+                      index === activeProject ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                    }`}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                  </a>
+                ))}
               </div>
 
               {/* Carousel Indicators (Overlay on image) */}
@@ -531,7 +563,7 @@ export default function Home() {
             {/* Bottom Content */}
             <div className="px-8 md:px-10 py-8 flex-1 relative flex flex-col justify-end">
               {projects.map((project, index) => (
-                <div 
+                <div
                   key={project.id}
                   className={`transition-all duration-1000 ease-in-out flex flex-col justify-end h-full ${
                     index === activeProject ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none absolute inset-x-8 md:inset-x-10"
@@ -691,7 +723,7 @@ export default function Home() {
                 <div className="mb-3 w-full md:w-2/3">
                   <div className="text-[8px] font-bold text-accent tracking-[0.2em] uppercase mb-1">Tech Stack Distribution</div>
                   <div className="h-1 w-full flex rounded-full overflow-hidden bg-[#1A1A1A]/5">
-                    {githubData?.topLangs?.map((lang: any, i: number) => {
+                    {githubData?.topLangs?.map((lang, i: number) => {
                       const colors = ['#325041', '#6D7C46'];
                       return (
                         <div 
@@ -703,7 +735,7 @@ export default function Home() {
                     })}
                   </div>
                   <div className="mt-2 flex items-center gap-x-4">
-                    {githubData?.topLangs?.map((lang: any, i: number) => {
+                    {githubData?.topLangs?.map((lang, i: number) => {
                       const colors = ['#325041', '#6D7C46'];
                       return (
                         <div key={lang.name} className="flex items-center gap-1.5 whitespace-nowrap">
@@ -737,7 +769,7 @@ export default function Home() {
               <div className="flex flex-col border-l border-[#1A1A1A]/5 pl-8">
                 <div className="text-[9px] font-bold text-accent tracking-[0.2em] uppercase mb-1">Recent Events</div>
                 <div className="flex flex-col gap-4">
-                  {githubData?.events?.map((event: any, i: number) => (
+                  {githubData?.events?.map((event, i: number) => (
                     <div key={i} className="flex flex-col border-l-2 border-accent/10 pl-4 py-1">
                       <span className="text-[10px] font-serif font-medium text-[#1A1A1A] line-clamp-1">
                         {event.type.replace("Event", "")}: {event.repo.name.split("/")[1]}
@@ -935,7 +967,7 @@ export default function Home() {
                 <div className="h-[1px] w-8 bg-[#1A1A1A]/20 mb-3"></div>
                 <div className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#1A1A1A]/70">
                   Uttaran Bose <br />
-                  <span className="text-accent/90">Creative Engineer</span>
+                  <span className="text-accent/90">Software Engineer</span>
                 </div>
               </div>
             </div>
